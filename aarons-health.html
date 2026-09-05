@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Aaron's Health">
+<meta name="theme-color" content="#0d0d0f">
+<title>Aaron's Health</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230d0d0f'/%3E%3Cpath d='M90 138c-3-2-42-27-42-58a26 26 0 0 1 42-20 26 26 0 0 1 42 20c0 31-39 56-42 58z' fill='none' stroke='%234ade80' stroke-width='9' stroke-linejoin='round'/%3E%3Cpath d='M56 92h16l7-16 10 30 8-20 5 6h18' fill='none' stroke='%234ade80' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#0d0d0f; --card:#17171a; --line:#232327; --line2:#2c2c31;
+    --green:#4ade80; --green-dim:rgba(74,222,128,0.14); --green-bd:rgba(74,222,128,0.32);
+    --red:#f87171; --red-dim:rgba(248,113,113,0.12);
+    --blue:#3d8add; --blue-dim:rgba(61,138,221,0.12); --blue-bd:rgba(61,138,221,0.45);
+    --txt:#ededf0; --muted:#8a8a92; --white:#ffffff;
+  }
+  html,body{ background:var(--bg); color:var(--txt); font-family:'Inter',-apple-system,system-ui,sans-serif; overscroll-behavior-y:none; }
+  body{ min-height:100vh; min-height:100dvh; }
+  .app{ max-width:480px; margin:0 auto; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; padding-top:env(safe-area-inset-top); }
+  .brand{ display:flex; align-items:center; gap:10px; padding:14px 20px 6px; }
+  .logo{ width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,#4ade80,#22c55e); display:flex; align-items:center; justify-content:center; }
+  .logo svg{ width:20px; height:20px; }
+  .brand h1{ font-size:17px; font-weight:600; color:var(--white); letter-spacing:0.01em; }
+  .screen{ flex:1; padding:6px 20px 120px; }
+  .phead{ display:flex; align-items:center; justify-content:space-between; margin:8px 0 2px; }
+  .phead .t{ font-size:22px; font-weight:600; color:var(--white); }
+  .phead .s{ font-size:13px; color:var(--muted); margin-top:1px; }
+  .ring{ width:62px; height:62px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .ring > div{ width:50px; height:50px; border-radius:50%; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600; color:var(--white); }
+  .sect{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin:20px 0 9px; font-weight:500; }
+  .stack{ display:flex; flex-direction:column; gap:9px; }
+  .row{ width:100%; display:flex; align-items:center; gap:14px; background:var(--card); border:0.5px solid var(--line); border-radius:15px; padding:15px 16px; cursor:pointer; text-align:left; font-family:inherit; transition:border-color .15s, transform .05s; }
+  .row:active{ transform:scale(0.99); }
+  .row.on{ border-color:var(--green-bd); }
+  .row .ic{ font-size:21px; color:var(--muted); width:24px; text-align:center; }
+  .row .lb{ flex:1; font-size:15px; color:var(--txt); }
+  .row .sub{ display:block; font-size:11px; color:var(--muted); margin-top:2px; }
+  .badge{ width:31px; height:31px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .badge.yes{ background:var(--green-dim); } .badge.no{ background:var(--red-dim); }
+  .badge svg{ width:17px; height:17px; }
+  .bottles{ display:flex; gap:9px; }
+  .bottle{ flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; background:var(--card); border:0.5px solid var(--line); border-radius:15px; padding:15px 0; cursor:pointer; font-family:inherit; transition:.15s; }
+  .bottle:active{ transform:scale(0.98); }
+  .bottle.full{ background:var(--blue-dim); border-color:var(--blue-bd); }
+  .bottle svg{ width:27px; height:27px; }
+  .bottle span{ font-size:12px; color:var(--muted); }
+  .bottle.full span{ color:var(--blue); }
+  .stats{ display:flex; gap:9px; margin:14px 0; }
+  .stat{ flex:1; background:var(--card); border:0.5px solid var(--line); border-radius:15px; padding:15px; }
+  .stat .k{ font-size:12px; color:var(--muted); }
+  .stat .v{ font-size:23px; font-weight:600; color:var(--white); margin-top:3px; }
+  .stat .v small{ font-size:13px; color:var(--muted); font-weight:400; }
+  .card{ background:var(--card); border:0.5px solid var(--line); border-radius:15px; }
+  .logrow{ display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-radius:15px; margin-bottom:9px; background:var(--card); border:0.5px solid var(--line); }
+  .logrow .d{ font-size:14px; color:var(--muted); }
+  .logrow .w{ font-size:15px; color:var(--txt); font-weight:500; }
+  .logrow .ch{ font-size:13px; min-width:56px; text-align:right; }
+  .empty{ text-align:center; color:var(--muted); font-size:14px; padding:36px 20px; line-height:1.6; }
+  .weighbtn{ width:100%; }
+  .nav{ position:fixed; bottom:0; left:0; right:0; max-width:480px; margin:0 auto; display:flex; background:rgba(13,13,15,0.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-top:0.5px solid var(--line); padding-bottom:env(safe-area-inset-bottom); }
+  .navbtn{ flex:1; background:none; border:none; padding:11px 0 12px; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; color:var(--muted); font-family:inherit; }
+  .navbtn svg{ width:23px; height:23px; }
+  .navbtn span{ font-size:11px; }
+  .navbtn.active{ color:var(--white); }
+  /* modal */
+  .modal-bg{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:flex-end; justify-content:center; z-index:50; }
+  .modal-bg.show{ display:flex; }
+  .modal{ background:#1b1b1f; width:100%; max-width:480px; border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); }
+  .modal h3{ font-size:18px; font-weight:600; color:var(--white); margin-bottom:4px; }
+  .modal p{ font-size:13px; color:var(--muted); margin-bottom:18px; }
+  .winput{ width:100%; background:var(--card); border:0.5px solid var(--line2); border-radius:14px; padding:16px; font-size:22px; font-weight:600; color:var(--white); font-family:inherit; text-align:center; margin-bottom:16px; }
+  .winput:focus{ outline:none; border-color:var(--green-bd); }
+  .mbtns{ display:flex; gap:10px; }
+  .mbtn{ flex:1; padding:15px 0; border-radius:14px; font-size:15px; font-weight:500; font-family:inherit; cursor:pointer; border:0.5px solid var(--line2); background:transparent; color:var(--txt); }
+  .mbtn.primary{ background:var(--green); border-color:var(--green); color:#0d0d0f; }
+  .install{ margin:16px 0 4px; background:var(--card); border:0.5px solid var(--line); border-radius:15px; padding:15px 16px; font-size:13px; color:var(--muted); line-height:1.6; display:flex; gap:12px; align-items:flex-start; }
+  .install svg{ width:20px; height:20px; flex-shrink:0; color:var(--green); margin-top:1px; }
+  .install b{ color:var(--txt); font-weight:500; }
+  .install .close{ margin-left:auto; color:var(--muted); cursor:pointer; font-size:20px; line-height:1; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 20c-1-.7-11-7-11-13a6.5 6.5 0 0 1 11-4 6.5 6.5 0 0 1 11 4c0 6-10 12.3-11 13z" stroke="#0d0d0f" stroke-width="2" stroke-linejoin="round"/><path d="M4 12h3.5l1.5-3.5L11.5 16 13 11l1 1.5h6" stroke="#0d0d0f" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1>Aaron's Health</h1>
+  </div>
+  <div class="screen" id="screen"></div>
+  <div class="nav" id="nav">
+    <button class="navbtn" data-tab="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12l2.5 2.5 4.5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Today</span></button>
+    <button class="navbtn" data-tab="weight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5a7 7 0 0 1 7 7H5a7 7 0 0 1 7-7z"/><path d="M12 5v0M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6" stroke-linecap="round"/><path d="M12 9l2-2" stroke-linecap="round"/></svg><span>Weight</span></button>
+    <button class="navbtn" data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg><span>Progress</span></button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalbg">
+  <div class="modal">
+    <h3>Log today's weight</h3>
+    <p>Enter your weight in kilograms.</p>
+    <input class="winput" id="winput" type="number" inputmode="decimal" step="0.1" placeholder="82.4">
+    <div class="mbtns">
+      <button class="mbtn" id="mcancel">Cancel</button>
+      <button class="mbtn primary" id="msave">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var SVG = {
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+    x:'<svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+    bottle:function(c){return '<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.7" stroke-linejoin="round"><path d="M10 2h4M10 2v2.5L8.5 7A3 3 0 0 0 8 8.7V20a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8.7A3 3 0 0 0 15.5 7L14 4.5V2"/><path d="M8 13h8" stroke-linecap="round"/></svg>';},
+    ico:function(k,c){var p={
+      breakfast:'<circle cx="12" cy="13" r="7"/><path d="M12 6V3M9 4l-1-1M15 4l1-1" stroke-linecap="round"/>',
+      lunch:'<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M4 15h16" stroke-linecap="round"/><path d="M12 11V7M12 7a2 2 0 1 0 0-4" stroke-linecap="round"/>',
+      dinner:'<path d="M7 3v8M5 3v4a2 2 0 0 0 4 0V3M7 11v10" stroke-linecap="round"/><path d="M16 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4 2.5-1 2.5-4-1-5-2.5-5zM16 12v9" stroke-linecap="round"/>',
+      snacks:'<circle cx="12" cy="12" r="8"/><circle cx="9.5" cy="10" r="1" fill="'+c+'"/><circle cx="14" cy="9.5" r="1" fill="'+c+'"/><circle cx="13" cy="14" r="1" fill="'+c+'"/><circle cx="9" cy="14" r="1" fill="'+c+'"/>',
+      cardio:'<circle cx="14" cy="5" r="2"/><path d="M6 21l3-6 3 1 1 5M9 15l-2-4 5-2 3 3 3 0" stroke-linecap="round" stroke-linejoin="round"/>',
+      weights:'<path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10" stroke-linecap="round"/>',
+      steps:'<path d="M8 4c1.5 0 2.5 2 2.5 5s-.5 6-2.5 6-2.5-2-2.5-5S6.5 4 8 4zM8 15v3a2 2 0 0 0 4 0M16 8c1.2 0 2 1.6 2 4s-.4 5-2 5-2-1.6-2-4 .8-5 2-5zM16 17v2a1.6 1.6 0 0 0 3.2 0" stroke-linecap="round" stroke-linejoin="round"/>',
+      scale:'<path d="M12 5a7 7 0 0 1 7 7H5a7 7 0 0 1 7-7z"/><path d="M12 9l2-2" stroke-linecap="round"/>'
+    };return '<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.8">'+(p[k]||'')+'</svg>';},
+    chev:'<svg viewBox="0 0 24 24" fill="none" stroke="#8a8a92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+    info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8h.01M11 12h1v4h1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9"/></svg>'
+  };
+
+  var GREEN='#4ade80', RED='#f87171', MUTED='#8a8a92', LINE='#232327';
+  var MEALS=[['breakfast','Breakfast'],['lunch','Lunch'],['dinner','Dinner'],['snacks','Snacks']];
+  var ACTS=[['cardio','Cardio'],['weights','Weight training']];
+  var WATER_TOTAL=3;
+
+  // ---------- storage ----------
+  function todayKey(d){ d=d||new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function load(){ try{ return JSON.parse(localStorage.getItem('aaronsHealth')||'{}'); }catch(e){ return {}; } }
+  function save(db){ localStorage.setItem('aaronsHealth', JSON.stringify(db)); }
+  function blankDay(){ return { breakfast:null, lunch:null, dinner:null, snacks:null, cardio:null, weights:null, steps:false, water:0, weight:null }; }
+  var db = load();
+  if(!db.days) db.days = {};
+  function getDay(k){ k=k||todayKey(); if(!db.days[k]) db.days[k]=blankDay(); return db.days[k]; }
+
+  var TICK_FIELDS=['breakfast','lunch','dinner','snacks','cardio','weights'];
+  function completion(day){
+    var n=0, total=8;
+    TICK_FIELDS.forEach(function(f){ if(day[f]===true) n++; });
+    if(day.steps===true) n++;
+    if(day.water>=WATER_TOTAL) n++;
+    return Math.round(n/total*100);
+  }
+  function fmtDate(d){ return d.toLocaleDateString('en-GB',{weekday:'short', day:'numeric', month:'short'}); }
+
+  var screen=document.getElementById('screen');
+  var currentTab='today';
+
+  function esc(s){ return s; }
+
+  // ---------- TODAY ----------
+  function renderToday(){
+    var day=getDay();
+    var pct=completion(day);
+    var ringStyle='background:conic-gradient(#4ade80 '+pct+'%, #232327 0);';
+    var h='<div class="phead"><div><div class="t">Today</div><div class="s">'+fmtDate(new Date())+'</div></div>'
+      + '<div class="ring" style="'+ringStyle+'"><div>'+pct+'%</div></div></div>';
+
+    // install hint (only if not standalone and not dismissed)
+    var standalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    if(!standalone && !db.installDismissed){
+      h+='<div class="install">'+SVG.info+'<div><b>Add to your home screen.</b> Tap the Share button in Safari, then “Add to Home Screen” — it opens fullscreen like a real app and keeps your data.</div><span class="close" data-act="dismiss-install">×</span></div>';
+    }
+
+    h+='<div class="sect">Meals · tap for ✓ good, ✗ bad</div><div class="stack">';
+    MEALS.forEach(function(m){ h+=tickRow(m[0], m[1], day[m[0]]); });
+    h+='</div>';
+
+    h+='<div class="sect">Water · '+day.water+' of '+WATER_TOTAL+' bottles</div><div class="bottles">';
+    for(var i=0;i<WATER_TOTAL;i++){ var f=i<day.water;
+      h+='<button class="bottle'+(f?' full':'')+'" data-act="water" data-i="'+i+'">'+SVG.bottle(f?'#3d8add':MUTED)+'<span>'+(f?'Done':'Bottle '+(i+1))+'</span></button>';
+    }
+    h+='</div>';
+
+    h+='<div class="sect">Activity</div><div class="stack">';
+    ACTS.forEach(function(a){ h+=tickRow(a[0], a[1], day[a[0]]); });
+    // steps — manual tick
+    var son=day.steps===true;
+    h+='<button class="row'+(son?' on':'')+'" data-act="steps"><span class="ic">'+SVG.ico('steps',MUTED)+'</span>'
+      + '<span class="lb">12k steps<span class="sub">Tap ✓ when your watch hits 12,000</span></span>'
+      + '<span class="badge '+(son?'yes':'no')+'">'+(son?SVG.check:SVG.x)+'</span></button>';
+    h+='</div>';
+
+    h+='<div class="sect">Weigh-in</div>';
+    h+='<button class="row weighbtn" data-act="weigh"><span class="ic">'+SVG.ico('scale',MUTED)+'</span>'
+      + '<span class="lb">Weight</span>'
+      + '<span class="w" style="font-size:15px;color:'+(day.weight?'#fff':MUTED)+';font-weight:'+(day.weight?'600':'400')+';margin-right:8px;">'+(day.weight?day.weight.toFixed(1)+' kg':'Add')+'</span>'
+      + SVG.chev+'</button>';
+
+    screen.innerHTML=h;
+  }
+  function tickRow(id,lbl,val){
+    var on=val===true, off=val===false, unset=val===null;
+    var cls = on?' on':'';
+    var badge = unset ? '<span class="badge no" style="background:#232327;opacity:.5;"><svg viewBox="0 0 24 24" fill="none" stroke="#8a8a92" stroke-width="2" stroke-linecap="round"><path d="M6 12h12"/></svg></span>'
+      : '<span class="badge '+(on?'yes':'no')+'">'+(on?SVG.check:SVG.x)+'</span>';
+    return '<button class="row'+cls+'" data-act="tick" data-id="'+id+'"><span class="ic">'+SVG.ico(id,MUTED)+'</span>'
+      + '<span class="lb">'+lbl+'</span>'+badge+'</button>';
+  }
+
+  // ---------- WEIGHT ----------
+  function renderWeight(){
+    var entries=[];
+    Object.keys(db.days).sort().forEach(function(k){ var d=db.days[k]; if(d.weight!=null) entries.push([k,d.weight]); });
+    var h='<div class="phead"><div><div class="t">Weight</div><div class="s">Day by day</div></div></div>';
+    if(entries.length===0){
+      h+='<div class="empty">No weigh-ins yet.<br>Add today\'s weight from the Today tab and it\'ll show up here.</div>';
+      screen.innerHTML=h; return;
+    }
+    var vals=entries.map(function(e){return e[1];});
+    var current=vals[vals.length-1];
+    var lost=(vals[0]-current);
+    h+='<div class="stats"><div class="stat"><div class="k">Current</div><div class="v">'+current.toFixed(1)+'<small> kg</small></div></div>'
+      + '<div class="stat"><div class="k">'+(lost>=0?'Lost':'Gained')+'</div><div class="v" style="color:'+(lost>=0?GREEN:RED)+'">'+Math.abs(lost).toFixed(1)+'<small> kg</small></div></div></div>';
+
+    // chart
+    if(entries.length>=2){
+      var w=300,ht=150, mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
+      var pad=(mx-mn)*0.2||1; mn-=pad; mx+=pad;
+      var pts=vals.map(function(v,i){ return [10+i*(w-20)/(vals.length-1), 10+(mx-v)/(mx-mn)*(ht-20)]; });
+      var line=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+      var area=line+' L'+pts[pts.length-1][0].toFixed(1)+' '+ht+' L'+pts[0][0].toFixed(1)+' '+ht+' Z';
+      h+='<div class="card" style="padding:14px 10px;margin-bottom:16px;"><svg viewBox="0 0 '+w+' '+ht+'" style="width:100%;height:auto;">'
+        + '<path d="'+area+'" fill="rgba(74,222,128,0.10)"/>'
+        + '<path d="'+line+'" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'
+        + '<circle cx="'+pts[pts.length-1][0].toFixed(1)+'" cy="'+pts[pts.length-1][1].toFixed(1)+'" r="4" fill="#4ade80"/></svg></div>';
+    }
+
+    h+='<div class="sect">Log</div>';
+    for(var i=entries.length-1;i>=0;i--){
+      var k=entries[i][0], v=entries[i][1];
+      var prev = i>0 ? entries[i-1][1] : null;
+      var chg = prev!=null ? v-prev : null;
+      var d=new Date(k+'T00:00:00');
+      h+='<div class="logrow"><span class="d">'+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</span>'
+        + '<span class="w">'+v.toFixed(1)+' kg</span>'
+        + '<span class="ch" style="color:'+(chg==null?MUTED:chg<=0?GREEN:RED)+'">'+(chg==null?'—':(chg<=0?'':'+')+chg.toFixed(1)+' kg')+'</span></div>';
+    }
+    screen.innerHTML=h;
+  }
+
+  // ---------- PROGRESS ----------
+  function renderProgress(){
+    var keys=Object.keys(db.days).sort();
+    var h='<div class="phead"><div><div class="t">Progress</div><div class="s">Consistency</div></div></div>';
+    if(keys.length===0){
+      h+='<div class="empty">Start ticking things off on the Today tab.<br>Your daily completion will build up here.</div>';
+      screen.innerHTML=h; return;
+    }
+    var recent=keys.slice(-14);
+    var comps=recent.map(function(k){ return completion(db.days[k]); });
+    var perfect=comps.filter(function(c){return c===100;}).length;
+    var avg=Math.round(comps.reduce(function(a,b){return a+b;},0)/comps.length);
+    // streak from most recent backwards over all keys
+    var streak=0; for(var i=keys.length-1;i>=0;i--){ if(completion(db.days[keys[i]])===100) streak++; else break; }
+
+    h+='<div class="stats"><div class="stat"><div class="k">Perfect days</div><div class="v" style="color:'+GREEN+'">'+perfect+'</div></div>'
+      + '<div class="stat"><div class="k">Streak</div><div class="v">'+streak+' <small>days</small></div></div></div>';
+
+    var bars=comps.map(function(c){
+      var col=c===100?'#4ade80':c>=80?'#a3e635':c>=50?'#facc15':'#f87171';
+      return '<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;"><div style="width:100%;max-width:16px;height:'+(c*0.9+8)+'px;background:'+col+';border-radius:4px;"></div></div>';
+    }).join('');
+    h+='<div class="card" style="padding:16px 14px;margin-bottom:14px;">'
+      + '<div style="display:flex;justify-content:space-between;margin-bottom:12px;"><span style="font-size:13px;color:#ededf0;">Daily completion</span><span style="font-size:13px;color:'+MUTED+';">avg '+avg+'%</span></div>'
+      + '<div style="display:flex;align-items:flex-end;gap:4px;height:110px;">'+bars+'</div>'
+      + '<div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:'+MUTED+';"><span>'+recent.length+'d ago</span><span>Today</span></div></div>';
+
+    h+='<div class="sect">What the colours mean</div><div class="card" style="padding:2px 16px;">';
+    [['#4ade80','100% — all boxes ticked'],['#a3e635','80%+ — almost there'],['#facc15','50%+ — half day'],['#f87171','Under 50%']].forEach(function(l,idx){
+      h+='<div style="display:flex;align-items:center;gap:10px;padding:12px 0;'+(idx<3?'border-bottom:0.5px solid '+LINE+';':'')+'"><span style="width:12px;height:12px;border-radius:3px;background:'+l[0]+';"></span><span style="font-size:13px;color:'+MUTED+';">'+l[1]+'</span></div>';
+    });
+    h+='</div>';
+    screen.innerHTML=h;
+  }
+
+  // ---------- events ----------
+  function render(){
+    if(currentTab==='today') renderToday();
+    else if(currentTab==='weight') renderWeight();
+    else renderProgress();
+    document.querySelectorAll('.navbtn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===currentTab); });
+  }
+
+  screen.addEventListener('click', function(e){
+    var el=e.target.closest('[data-act]'); if(!el) return;
+    var act=el.dataset.act, day=getDay();
+    if(act==='tick'){ var id=el.dataset.id; day[id] = day[id]===true ? false : day[id]===false ? null : true; save(db); renderToday(); }
+    else if(act==='steps'){ day.steps = !day.steps; save(db); renderToday(); }
+    else if(act==='water'){ var i=parseInt(el.dataset.i); day.water = (day.water===i+1)? i : i+1; save(db); renderToday(); }
+    else if(act==='weigh'){ openWeigh(); }
+    else if(act==='dismiss-install'){ db.installDismissed=true; save(db); renderToday(); }
+  });
+
+  document.getElementById('nav').addEventListener('click', function(e){
+    var b=e.target.closest('.navbtn'); if(!b) return; currentTab=b.dataset.tab; render();
+  });
+
+  // weigh-in modal
+  var modalbg=document.getElementById('modalbg'), winput=document.getElementById('winput');
+  function openWeigh(){ var day=getDay(); winput.value = day.weight!=null ? day.weight : ''; modalbg.classList.add('show'); setTimeout(function(){ winput.focus(); },100); }
+  function closeWeigh(){ modalbg.classList.remove('show'); winput.blur(); }
+  document.getElementById('mcancel').addEventListener('click', closeWeigh);
+  modalbg.addEventListener('click', function(e){ if(e.target===modalbg) closeWeigh(); });
+  document.getElementById('msave').addEventListener('click', function(){
+    var v=parseFloat(winput.value);
+    if(!isNaN(v) && v>0){ getDay().weight = Math.round(v*10)/10; save(db); }
+    closeWeigh(); render();
+  });
+  winput.addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('msave').click(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
